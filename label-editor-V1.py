@@ -52,14 +52,23 @@ for line in file:
 	#------------control var--------------------
 
 	#------------edit---------------------------
+	#------------dir edit-----------------------
 	array[indexes["Dir"]] = direction[array[indexes["Dir"]]]
+	#------------label edit---------------------
+	label = array[indexes["Label"]]
+	label = label.split('-')
+	label = label + label[0].split('=')
+	botnet_flag = 0
+	for x in range(0,len(label)):
+		label[x] = label[x].lower()
+		if(label[x] == "botnet"):
+			botnet_flag = 1
+	array[indexes["Label"]] = botnet_flag
 	#------------output to file-----------------
 	for x in range(0,len(array)):#convert everythong to string
 		array[x] = str(array[x])
 	line_to_write = ','.join(array) + "\n"
 	output_file.write(line_to_write)
-
-
 
 file.close()
 output_file.close()
