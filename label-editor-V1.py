@@ -39,6 +39,28 @@ direction = {
 	"  <?": 7
 }
 
+proto = {
+	"tcp": 1 , 
+	"udp": 2 , 
+	"icmp": 3 , 
+	"esp": 4 , 
+	"rtp": 5 , 
+	"arp": 6 ,
+	"igmp": 7 , 
+	"ipx/spx": 8 ,
+	"rtcp": 9 ,
+	"pim" : 10 ,
+	"ipv6-icmp": 11 , 
+	"udt": 12 ,
+	"ipv6": 13 ,
+	"rsvp": 14 ,
+	"rarp": 15 ,
+	"gre": 16 ,
+	"unas": 17 ,
+	"ipnip": 18 ,
+	"llc" : 19
+}
+
 #----------------Search and edit----------------
 for line in file: 
 	#------------Pass header--------------------
@@ -54,6 +76,8 @@ for line in file:
 	#------------edit---------------------------
 	#------------dir edit-----------------------
 	array[indexes["Dir"]] = direction[array[indexes["Dir"]]]
+	#------------proto edit-----------------------
+	array[indexes["Proto"]] = proto[array[indexes["Proto"]]]
 	#------------label edit---------------------
 	label = array[indexes["Label"]]
 	label = label.split('-')
