@@ -15,6 +15,8 @@ output_file_background = open("./output_test/0/data.txt",'w');
 
 init_flag = False
 
+max_ip = 255255255255
+
 
 #----------------Search and edit----------------
 for line in file: 
@@ -48,6 +50,15 @@ for line in file:
 			if(label[x] == "botnet"):
 				botnet_flag = 1
 		array[indexes["Label"]] = botnet_flag
+		#------------ip edit------------------------
+		ip_source= array[indexes["SrcAddr"]]
+		ip_dest = array[indexes["DstAddr"]]
+		ip_source = ip_source.split(".")
+		ip_dest = ip_dest.split(".")
+		ip_source = int(''.join(ip_source))/max_ip
+		ip_dest = int(''.join(ip_dest))/max_ip
+		array[indexes["SrcAddr"]] = ip_source
+		array[indexes["DstAddr"]] = ip_dest
 	#------------trim array---------------------
 	trimed_array = array[1:]
 	del trimed_array[-1]
