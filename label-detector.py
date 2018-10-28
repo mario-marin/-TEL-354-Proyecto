@@ -5,8 +5,11 @@ path = sys.argv[1]
 selected_label = sys.argv[2]
 selected_label = selected_label.lower()
 
-create_dict = sys.argv[3]
+#--------------utility flags---------
+create_dict = False
+find_max = True
 
+#------------------------------------
 file = open(path,'r');
 
 found_labels = []
@@ -14,7 +17,7 @@ found_labels = []
 total = 0
 
 init_flag = False
-
+max_value = 0
 for line in file: 
 	line = line.rstrip() #trim de fat (\n)
 	#------------Find label---------------------
@@ -37,28 +40,38 @@ for line in file:
 	#------------label triming block------------
 	array = line.split(',')
 	label = array[index]
+	#------------max finder---------------------
+	if find_max:
+		if label == "":
+			continue
+		if max_value < float(label): 
+			max_value = float(label)
 	#------------control var--------------------
 	counter = 0
 	flag = False;
 	#------------search loop--------------------
-	for vector in found_labels:
-		if vector[0] == label:
-			vector[1] = vector[1] + 1
-			total+=1
-			flag = True
-			break
-		counter+=1
+	if not find_max:
+		for vector in found_labels:
+			if vector[0] == label:
+				vector[1] = vector[1] + 1
+				total+=1
+				flag = True
+				break
+			counter+=1
 
-	if flag==False:
-		found_labels.append([label,1])
-		total+=1
+		if flag==False:
+			found_labels.append([label,1])
+			total+=1
 	#------------print reults--------------------
 for x in found_labels:
 	print(x)
-print("Total entries: " + str(total))
-print("Number of diferent labels: " + str(len(found_labels)))
 
-if create_dict == "true":
+if find_max:
+	print("Max value: "+ str(max_value))
+else:
+	print("Total entries: " + str(total))
+	print("Number of diferent labels: " + str(len(found_labels)))
+if create_dict:
 	counter = 0
 	for x in found_labels:
 		print("    "+'"'+str(x[0])+'"'+":"+" "+str(counter)+" ,")

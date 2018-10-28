@@ -10,12 +10,18 @@ output_path = sys.argv[2]
 file = open(open_path,'r');
 output_file = open(output_path,'w');
 
-output_file_bot = open("./output_test/1/data.txt",'w');
-output_file_background = open("./output_test/0/data.txt",'w');
-
 init_flag = False
 
 max_ip = 255255255255
+max_port = 65535
+max_dur = 3660
+max_dir = len(direction)
+max_proto = len(proto)
+max_state = len(state)
+max_sTos = 192
+max_totpkts = 16580642
+max_totbytes = 4376238778
+max_srcbytes = 2692621086
 
 
 #----------------Search and edit----------------
@@ -35,11 +41,11 @@ for line in file:
 	if init_flag == True:
 		#------------edit block---------------------
 		#------------dir edit-----------------------
-		array[indexes["Dir"]] = direction[array[indexes["Dir"]]]
+		array[indexes["Dir"]] = direction[array[indexes["Dir"]]]/max_dir
 		#------------proto edit---------------------
-		array[indexes["Proto"]] = proto[array[indexes["Proto"]]]
+		array[indexes["Proto"]] = proto[array[indexes["Proto"]]]/max_proto
 		#------------state edit---------------------
-		array[indexes["State"]] = state[array[indexes["State"]]]
+		array[indexes["State"]] = state[array[indexes["State"]]]/max_state
 		#------------label edit---------------------
 		label = array[indexes["Label"]]
 		label = label.split('-')
@@ -50,52 +56,102 @@ for line in file:
 			if(label[x] == "botnet"):
 				botnet_flag = 1
 		array[indexes["Label"]] = botnet_flag
-		#------------ip edit------------------------
+		#------------ip edit------------------------ #se ignora ipv6
 		ip_source= array[indexes["SrcAddr"]]
-		ip_dest = array[indexes["DstAddr"]]
+		ip_dest = array[indexes["DstAddr"]]	
 		ip_source = ip_source.split(".")
 		ip_dest = ip_dest.split(".")
-		ip_source = int(''.join(ip_source))/max_ip
-		ip_dest = int(''.join(ip_dest))/max_ip
+		try:
+			ip_source = int(''.join(ip_source))/max_ip
+			ip_dest = int(''.join(ip_dest))/max_ip
+		except Exception as e:
+			print(ip_source)
+			print(ip_dest)
+			continue
 		array[indexes["SrcAddr"]] = ip_source
 		array[indexes["DstAddr"]] = ip_dest
+		#------------port edit----------------------
+		if array[indexes["Sport"]] == "" or array[indexes["Dport"]] == "":
+			continue
+		port_source= array[indexes["Sport"]]
+		port_dest = array[indexes["Dport"]]
+		try:
+			port_source = int(port_source)/max_port
+			port_dest = int(port_dest)/max_port
+		except Exception as e:
+			port_source = int(port_source,16)/max_port
+			port_dest = int(port_dest,16)/max_port
+		array[indexes["Sport"]] = port_source
+		array[indexes["Dport"]] = port_dest
+		#------------dur edit-----------------------
+		duration= array[indexes["Dur"]]
+		duration = float(duration)/max_dur
+		array[indexes["Dur"]] = duration
+		#------------sTos edit----------------------
+		#debido a que se desconoce que este dato sera eliminado por el momento
+		'''
+		if array[indexes["sTos"]] == "":
+			continue
+		sTos= array[indexes["sTos"]]
+		sTos = float(sTos)/max_sTos
+		array[indexes["sTos"]] = sTos
+		'''
+		#------------dTos edit----------------------
+		#debido a que se desconoce que este dato sera eliminado por el momento
+		#------------Start time edit----------------
+		#se considera que este valor no es relevante por ende sera eliminado por el momento
+		#------------TotPkts edit-------------------
+		TotPkts= array[indexes["TotPkts"]]
+		TotPkts = float(TotPkts)/max_totpkts
+		array[indexes["TotPkts"]] = TotPkts
+		#------------TotBytes edit-------------------
+		TotBytes= array[indexes["TotBytes"]]
+		TotBytes = float(TotBytes)/max_totbytes
+		array[indexes["TotBytes"]] = TotBytes
+		#------------SrcBytes edit-------------------
+		SrcBytes= array[indexes["SrcBytes"]]
+		SrcBytes = float(SrcBytes)/max_srcbytes
+		array[indexes["SrcBytes"]] = SrcBytes
+
 	#------------trim array---------------------
-	trimed_array = array[1:]
-	del trimed_array[-1]
+	trimed_array = array
+	del trimed_array[indexes["StartTime"]]
+	del trimed_array[indexes["sTos"]-1]
+	del trimed_array[indexes["dTos"]-2]
 
 	#------------output to file-----------------
-	for x in range(0,len(array)):#convert everythong to string
-		array[x] = str(array[x])
 	for x in range(0,len(trimed_array)):#convert everythong to string
 		trimed_array[x] = str(trimed_array[x])
 
-	line_to_write = ','.join(array) + "\n"
 	trimed_line = ','.join(trimed_array) + "\n"
-	output_file.write(line_to_write)
+	output_file.write(trimed_line)
+	init_flag = True
 
-	if init_flag == True:
-		if botnet_flag == 1:
-			output_file_bot.write(trimed_line)
-		else:
-			output_file_background.write(trimed_line)
-	else:
-		output_file_bot.write(trimed_line)
-		output_file_background.write(trimed_line)
-		init_flag = True
 
 file.close()
 output_file.close()
-output_file_background.close()
-output_file_bot.close()
 
 if expand_state_flag:
 	print(state)
 	print(state_count)
 
-'''
-dataset = datasets.load_files("./output_test")
-print(dataset)
 
-pandas_dataset = pd.read_csv(output_path,header=1)
-print(pandas_dataset)
-'''
+#dataset = datasets.load_files("./output_test")
+#print(dataset)
+pd.set_option('precision',20)#indica cuandots decimales tiene el flotante
+
+dataset = pd.read_csv(output_path,float_precision="high",dtype=float)
+dataset.dropna(inplace=True) #drops rows with null values
+#print(dataset.dtypes)
+
+feature_cols = ["Dur","Proto","SrcAddr","Sport","Dir","DstAddr","Dport","State","TotPkts","TotBytes","SrcBytes"]
+X = dataset.loc[:,feature_cols]
+print(X.shape)
+#print(X)
+Y = dataset.Label
+print(Y.shape)
+print(Y.dtypes)
+#print(Y)
+
+
+
