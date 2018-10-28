@@ -5,6 +5,8 @@ path = sys.argv[1]
 selected_label = sys.argv[2]
 selected_label = selected_label.lower()
 
+create_dict = sys.argv[3]
+
 file = open(path,'r');
 
 found_labels = []
@@ -55,5 +57,12 @@ for x in found_labels:
 	print(x)
 print("Total entries: " + str(total))
 print("Number of diferent labels: " + str(len(found_labels)))
+
+if create_dict == "true":
+	counter = 0
+	for x in found_labels:
+		print("    "+'"'+str(x[0])+'"'+":"+" "+str(counter)+" ,")
+		counter+=1
+
 
 file.close()
