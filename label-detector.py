@@ -7,7 +7,7 @@ selected_label = selected_label.lower()
 
 #--------------utility flags---------
 create_dict = False
-find_max = True
+find_max = False
 
 #------------------------------------
 file = open(path,'r');
