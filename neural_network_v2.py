@@ -3,12 +3,14 @@ from sklearn.neural_network import MLPClassifier
 import pandas as pd
 from os import listdir
 from os.path import isfile, join
+import numpy as np
 
 
-testing_dataset_path = sys.argv[1]
-training_dataset_path = sys.argv[2]
+testing_dataset_path = sys.argv[2]
+training_dataset_path = sys.argv[1]
 
 pd.set_option('precision',20)#indica cuandots decimales tiene el flotante
+feature_cols = ["Dur","Proto","SrcAddr","Sport","Dir","DstAddr","Dport","TotPkts","TotBytes","SrcBytes"]
 
 #USAGE: simplemente po todos los dataset con que quieres entrenar y el ultimo dataset sera el de prueba
 
@@ -32,9 +34,7 @@ print(testing_files)
 for path in training_files:
 	print("Training with dataset : "+path)
 	training_dataset = pd.read_csv(path,float_precision="high",dtype=float)
-	training_dataset.dropna(inplace=True) #drops rows with null values
-
-	feature_cols = ["Dur","Proto","SrcAddr","Sport","Dir","DstAddr","Dport","State","TotPkts","TotBytes","SrcBytes"]
+	training_dataset.fillna(0)
 	X = training_dataset.loc[:,feature_cols]
 	Y = training_dataset.Label
 
@@ -50,9 +50,7 @@ print("Training done")
 
 for path in testing_files:
 	testing_dataset = pd.read_csv(path,float_precision="high",dtype=float)
-	testing_dataset.dropna(inplace=True) #drops rows with null values
-
-	feature_cols = ["Dur","Proto","SrcAddr","Sport","Dir","DstAddr","Dport","State","TotPkts","TotBytes","SrcBytes"]
+	testing_dataset.fillna(0)
 	X_testing = testing_dataset.loc[:,feature_cols]
 	Y_testing = testing_dataset.Label
 
