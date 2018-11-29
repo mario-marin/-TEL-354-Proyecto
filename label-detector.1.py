@@ -23,7 +23,7 @@ for line in file:
 	#------------Find label---------------------
 	if init_flag == False:
 		array = line.split(',')
-		if selected_label == "header":  #StartTime,Dur,Proto,SrcAddr,Sport,Dir,DstAddr,Dport,State,sTos,dTos,TotPkts,TotBytes,SrcBytes,Label
+		if selected_label == "header":  #0.StartTime,1.Dur,2.Proto,3.SrcAddr,4.Sport,5.Dir,6.DstAddr,7.Dport,8.State,9.sTos,10.dTos,11.TotPkts,12.TotBytes,13.SrcBytes,14.Label
 			print("File header: "+ str(array))
 			exit()
 		index = 0
@@ -61,6 +61,7 @@ for line in file:
 
 		if flag==False:
 			found_labels.append([label,1])
+			print(found_labels)
 			total+=1
 	#------------print reults--------------------
 for x in found_labels:

@@ -6,8 +6,8 @@ open_path = sys.argv[1]
 output_path = sys.argv[2]
 
 
-file = open(open_path,'r');
-output_file = open(output_path,'w');
+file = open(open_path,'r')
+output_file = open(output_path,'w')
 
 init_flag = False
 
