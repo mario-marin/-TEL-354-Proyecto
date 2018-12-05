@@ -9,7 +9,7 @@ output_path = "ip-botnet"
 file = open(open_path,'r')
 output_file = open(output_path,'w')
 
-init_flag = True
+init_flag = False
 
 #----------------Search and edit----------------
 for line in file: 
@@ -30,6 +30,8 @@ for line in file:
 			if  botnet_flag == 0:
 				continue
 			array[indexes["Label"]] = 1
+	else:
+		init_flag = True
 	trimed_array = array
 	del trimed_array[indexes["dTos"]]
 	del trimed_array[indexes["sTos"]]
