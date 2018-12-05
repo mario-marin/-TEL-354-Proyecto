@@ -9,9 +9,13 @@ import numpy as np
 testing_dataset_path = sys.argv[2]
 training_dataset_path = sys.argv[1]
 
+dataset_version = int(sys.argv[3])
+
 pd.set_option('precision',20)#indica cuandots decimales tiene el flotante
-feature_cols = ["Dur","Proto","SrcAddr","Sport","Dir","DstAddr","Dport","TotPkts","TotBytes","SrcBytes"]
-#feature_cols = ["Dur","Proto","SrcAddr_1","SrcAddr_2","SrcAddr_3","SrcAddr_4","Sport","Dir","DstAddr_1","DstAddr_2","DstAddr_3","DstAddr_4","Dport","TotPkts","TotBytes","SrcBytes"]
+if dataset_version == 2:
+	feature_cols = ["Dur","Proto","SrcAddr","Sport","Dir","DstAddr","Dport","TotPkts","TotBytes","SrcBytes"]
+if dataset_version == 3:
+	feature_cols = ["Dur","Proto","SrcAddr_1","SrcAddr_2","SrcAddr_3","SrcAddr_4","Sport","Dir","DstAddr_1","DstAddr_2","DstAddr_3","DstAddr_4","Dport","TotPkts","TotBytes","SrcBytes"]
 
 #USAGE: simplemente po todos los dataset con que quieres entrenar y el ultimo dataset sera el de prueba
 
@@ -35,7 +39,7 @@ print(testing_files)
 for path in training_files:
 	print("Training with dataset : "+path)
 	training_dataset = pd.read_csv(path,float_precision="high",dtype=float)
-	training_dataset.fillna(0)
+	#training_dataset.fillna(0)
 	X = training_dataset.loc[:,feature_cols]
 	Y = training_dataset.Label
 

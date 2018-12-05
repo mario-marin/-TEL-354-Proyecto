@@ -56,11 +56,11 @@ for line in file:
 				botnet_flag = 1
 				break
 		if  botnet_flag == 0:
-			'''
+			
 			rand = np.random.uniform(high = 100.0)
 			if rand > 5.0 :
 				continue
-			'''
+			
 		array[indexes["Label"]] = botnet_flag
 		#------------ip edit------------------------ #se ignora ipv6 solo ocupa los primeros 2 octetos
 		ip_source= array[indexes["SrcAddr"]]
@@ -138,7 +138,7 @@ for line in file:
 	#------------output to file-----------------
 	#custom header
 	if init_flag == False:
-		output_file.write('Dur,Proto,SrcAddr_1,SrcAddr_2,SrcAddr_3,SrcAddr_4,Sport,Dir,DstAdd_1,DstAdd_2,DstAddr_3,DstAddr_4,Dport,TotPkts,TotBytes,SrcBytes,Label\n')
+		output_file.write('Dur,Proto,SrcAddr_1,SrcAddr_2,SrcAddr_3,SrcAddr_4,Sport,Dir,DstAddr_1,DstAddr_2,DstAddr_3,DstAddr_4,Dport,TotPkts,TotBytes,SrcBytes,Label\n')
 		init_flag = True
 		continue
 
