@@ -1,9 +1,8 @@
 import sys
-from lookup_tables import *
 import numpy as np
 
 open_path = sys.argv[1]
-output_path = "ip-botnet"
+output_path = sys.argv[2]
 
 
 file = open(open_path,'r')
