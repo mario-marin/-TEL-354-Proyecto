@@ -4,12 +4,16 @@ import pandas as pd
 from os import listdir
 from os.path import isfile, join
 import numpy as np
+from joblib import dump, load
 
 
 testing_dataset_path = sys.argv[2]
 training_dataset_path = sys.argv[1]
 
 dataset_version = int(sys.argv[3])
+
+load_network  = sys.argv[4]
+output = sys.argv[5]
 
 pd.set_option('precision',20)#indica cuandots decimales tiene el flotante
 if dataset_version == 2:
@@ -21,12 +25,13 @@ if dataset_version == 3:
 
 #-------------training the model---------------
 
-training_files = [f for f in listdir(training_dataset_path) if isfile(join(training_dataset_path, f))]
+if load_network == "False":
+	training_files = [f for f in listdir(training_dataset_path) if isfile(join(training_dataset_path, f))]
 
-for x in range(0,len(training_files)):
-	training_files[x] = training_dataset_path + training_files[x]
+	for x in range(0,len(training_files)):
+		training_files[x] = training_dataset_path + training_files[x]
 
-print(training_files)
+	print(training_files)
 
 testing_files = [f for f in listdir(testing_dataset_path) if isfile(join(testing_dataset_path, f))]
 
@@ -35,27 +40,32 @@ for x in range(0,len(testing_files)):
 
 print(testing_files)
 
+if load_network == "False":
 
-for path in training_files:
-	print("Training with dataset : "+path)
-	training_dataset = pd.read_csv(path,float_precision="high",dtype=float)
-	#training_dataset.fillna(0)
-	X = training_dataset.loc[:,feature_cols]
-	Y = training_dataset.Label
-
-
-	activation_type = ['identity','logistic','tanh','relu']
-
-	#vamos a probar con otras activaciones
-	mlp = MLPClassifier(solver='sgd',learning_rate='adaptive',verbose=True,activation=activation_type[2])
-
-	mlp.fit(X,Y)
+	for path in training_files:
+		print("Training with dataset : "+path)
+		training_dataset = pd.read_csv(path,float_precision="high",dtype=float)
+		#training_dataset.fillna(0)
+		X = training_dataset.loc[:,feature_cols]
+		Y = training_dataset.Label
 
 
-print("Training done")
+		activation_type = ['identity','logistic','tanh','relu']
+
+		#vamos a probar con otras activaciones
+		mlp = MLPClassifier(solver='sgd',learning_rate='adaptive',verbose=True,activation=activation_type[2])
+
+		mlp.fit(X,Y)
+
+	print("Training done")
 
 
 #------------testing the model-----------------
+if load_network == "True":
+	activation_type = ['identity','logistic','tanh','relu']
+	mlp = MLPClassifier(solver='sgd',learning_rate='adaptive',verbose=True,activation=activation_type[2])
+
+	mlp = load(output) 
 
 for path in testing_files:
 	testing_dataset = pd.read_csv(path,float_precision="high",dtype=float)
@@ -91,3 +101,9 @@ for path in testing_files:
 	print("incorect 0 : "+str(false_0))
 	print("incorect 1 : "+str(false_1))
 	print("Final points given by mlp.score : "+str(mlp.score(X_testing,Y_testing)))
+
+	dump(mlp, output) 
+
+
+
+
